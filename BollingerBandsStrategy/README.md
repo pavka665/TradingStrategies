@@ -1,4 +1,4 @@
-**Stragegy Info
+## Stragegy Info
 
 Calculate the upper and lower bands
 UPPER_BB = STOCK SMA + SMA STANDARD DEVIATION * 2
