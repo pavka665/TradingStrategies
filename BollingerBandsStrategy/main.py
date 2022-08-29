@@ -37,7 +37,7 @@ def get_klines(symbol, interval, limit=500):
     return data
 
 
-df = get_klines('btcusdt', '1h', 1500)
+df = get_klines('ethusdt', '1h', 1500)
 
 
 # Bollinger Bands calculation
@@ -108,14 +108,38 @@ def implement_bb_strategy(data, lower_bb, upper_bb):
 
 buy_price, sell_price, bb_signal = implement_bb_strategy(df['Close'], df['lower_bb'], df['upper_bb'])
 
+def backtest(prices, signal):
+    long_trades = []
+    short_trades = []
+
+    for i in range(len(signal)):
+        if signal[i] == 1:
+            target = prices[i] + (prices[i] * 0.02)
+            stop = prices[i] - (prices[i] * 0.8)
+
+            for j in prices:
+                if target <= j:
+                    long_trades.append(1)
+                    break
+                elif stop <= j:
+                    long_trades.append(-1)
+                    break
+        elif signal[i] == -1:
+            pass
+    return long_trades
+
+l_trade = backtest(df['Close'], bb_signal)
+print(f'Total Signals: {bb_signal.count(1)} | Good Trades: {l_trade.count(1)} | Bad Trades: {l_trade.count(-1)}')
 
 # Ploting the data with signals
-df['Close'].plot(label='Close Price', color='#f1f1f1', linewidth=1.3)
-df['upper_bb'].plot(label='Upper BB', color='#e84393', linewidth=1.3)
-df['sma_20'].plot(label='Middle BB', color='#fff200', linewidth=1)
-df['lower_bb'].plot(label='Lower BB', color='#6c5ce7', linewidth=1.3)
-plt.scatter(df.index, buy_price, marker='^', color='#32ff7e', label='Buy', s=200)
-plt.scatter(df.index, sell_price, marker='v', color='#ff3838', label='Sell', s=200)
-plt.title('BTC BB STRATEGY TRADING SIGNALS')
-plt.legend(loc='upper left')
-plt.show()
+# df['Close'].plot(label='Close Price', color='#f1f1f1', linewidth=1.3)
+# df['upper_bb'].plot(label='Upper BB', color='#e84393', linewidth=1.3)
+# df['sma_20'].plot(label='Middle BB', color='#fff200', linewidth=1)
+# df['lower_bb'].plot(label='Lower BB', color='#6c5ce7', linewidth=1.3)
+# plt.scatter(df.index, buy_price, marker='^', color='#32ff7e', label='Buy', s=200)
+# plt.scatter(df.index, sell_price, marker='v', color='#ff3838', label='Sell', s=200)
+# plt.title('BTC BB STRATEGY TRADING SIGNALS')
+# plt.legend(loc='upper left')
+# plt.show()
+
+ff8ddb0d2
